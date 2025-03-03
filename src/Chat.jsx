@@ -40,9 +40,6 @@ const Chat = () => {
         const page = await pdf.getPage(i);
         const text = await page.getTextContent();
 
-        // 페이지에서 텍스트 항목 확인
-        console.log(`Page ${i}:`, text.items);
-
         textContent += text.items.map((item) => item.str).join(" ") + "\n";
       }
 
@@ -54,6 +51,8 @@ const Chat = () => {
   };
 
   const initializeChain = async () => {
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
     try {
       const pdfText = await extractTextFromPDF("/pps_rules.pdf");
 
@@ -68,7 +67,7 @@ const Chat = () => {
       const splitDocs = await splitter.splitDocuments(docs); // 배열 전달
 
       const embeddings = new OpenAIEmbeddings({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        apiKey,
       });
       const vectorStore = await MemoryVectorStore.fromDocuments(
         splitDocs,
@@ -78,7 +77,7 @@ const Chat = () => {
       const retriever = vectorStore.asRetriever({ k: 2 });
 
       const model = new ChatOpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        apiKey,
       });
       const prompt = ChatPromptTemplate.fromTemplate(`
         Answer the user's question. 
@@ -175,15 +174,33 @@ const Chat = () => {
         ))}
       </Box>
 
-      <Box display="flex" p={1} mt={1} bgcolor="white" borderRadius={2}>
-        <Input
-          inputStyle={{ backgroundColor: "white", minWidth: 0 }}
-          placeholder="메시지를 입력하세요..."
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <Button text="전송" onClick={sendMessage} />
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: "4px",
+          marginTop: "8px",
+          backgroundColor: "white",
+          borderRadius: "8px",
+        }}
+      >
+        <Box sx={{ display: "flex", width: "100%" }}>
+          <Input
+            inputStyle={{
+              backgroundColor: "white",
+              minWidth: 0,
+              display: "flex",
+            }}
+            placeholder="메시지를 입력하세요..."
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+          />
+        </Box>
+        <Box sx={{ display: "flex", width: "50px" }}>
+          <Button text="전송" onClick={sendMessage} />
+        </Box>
       </Box>
     </Box>
   );
