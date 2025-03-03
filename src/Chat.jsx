@@ -68,7 +68,8 @@ const Chat = () => {
       const splitDocs = await splitter.splitDocuments(docs); // 배열 전달
 
       const embeddings = new OpenAIEmbeddings({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        apiKey:
+          "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",
       });
       const vectorStore = await MemoryVectorStore.fromDocuments(
         splitDocs,
@@ -78,7 +79,8 @@ const Chat = () => {
       const retriever = vectorStore.asRetriever({ k: 2 });
 
       const model = new ChatOpenAI({
-        apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+        apiKey:
+          "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",
       });
       const prompt = ChatPromptTemplate.fromTemplate(`
         Answer the user's question. 
