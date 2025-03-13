@@ -90,13 +90,23 @@ export default function ChatFromApi() {
           bgcolor="gray"
           borderRadius={2}
           color={"black"}
+          textAlign={"left"}
         >
           {messages.map((msg, index) => (
             <MessageBox
               key={index}
               position={msg.position}
               type={msg.type}
-              text={msg.text}
+              text={
+                <>
+                  {msg.text.split("\n").map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
+                </>
+              }
               date={msg.date}
             />
           ))}
