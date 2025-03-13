@@ -45,13 +45,12 @@ export default function ChatFromApi() {
       const res = await axios.post("http://localhost:5000/chat", {
         question: inputText,
       });
-      console.log(res);
 
       //대답 말풍선
       const answerMessage = {
         position: "left",
         type: "text",
-        text: res.data.answer.answer || "죄송합니다. 오류가 발생했습니다.",
+        text: res.data.answer || "죄송합니다. 오류가 발생했습니다.",
         date: new Date(),
       };
 
